@@ -2,7 +2,6 @@ package com.zoey.recyclerviewexample.adapter
 
 import android.graphics.Canvas
 import android.view.MotionEvent
-import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
 import androidx.recyclerview.widget.RecyclerView
@@ -21,9 +20,9 @@ class ItemTouchHelperCallback(
     ): Int {
 
         val drag_flags = ItemTouchHelper.UP.or(ItemTouchHelper.DOWN)
-        val swipe_flags = ItemTouchHelper.END
+        val swipe_flags = ItemTouchHelper.START
 
-        return makeMovementFlags(drag_flags, swipe_flags)
+        return makeMovementFlags(drag_flags, 0)
     }
 
     override fun onMove(
@@ -37,7 +36,7 @@ class ItemTouchHelperCallback(
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         listener.onItemSwipe(viewHolder.adapterPosition)
     }
-    
+
     override fun isLongPressDragEnabled(): Boolean {
         return dragState
     }
@@ -45,4 +44,5 @@ class ItemTouchHelperCallback(
     override fun isItemViewSwipeEnabled(): Boolean {
         return swipeState
     }
+
 }
