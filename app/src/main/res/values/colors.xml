@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#151515</color>
     <color name="colorFont">#252525</color>
+    <color name="feelSoso">#F8BC08</color>
+    <color name="feelSad">#35A2F8</color>
+    <color name="feelHappy">#E84235</color>
 </resources>
