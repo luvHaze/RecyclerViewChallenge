@@ -12,3 +12,4 @@ data class Diary(
     var body: String,
     var cover: String?
 ) : Serializable
+

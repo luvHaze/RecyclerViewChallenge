@@ -34,7 +34,7 @@ class ItemTouchHelperCallback(
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        listener.onItemSwipe(viewHolder.adapterPosition)
+
     }
 
     override fun isLongPressDragEnabled(): Boolean {

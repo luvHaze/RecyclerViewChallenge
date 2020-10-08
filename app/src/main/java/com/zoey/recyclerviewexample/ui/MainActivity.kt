@@ -11,13 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.zoey.recyclerviewexample.R
 import com.zoey.recyclerviewexample.adapter.ItemTouchHelperCallback
 import com.zoey.recyclerviewexample.adapter.DiaryRecyclerViewAdapter
+import com.zoey.recyclerviewexample.adapter.ItemEditListener
 import com.zoey.recyclerviewexample.model.Diary
+import com.zoey.recyclerviewexample.model.EDIT_DIARY_CODE
+import com.zoey.recyclerviewexample.model.WRITE_DIARY_CODE
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-const val WRITE_DIARY_CODE = 201
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var swipeState: Boolean = false
     private var dragState: Boolean = false
 
+    private lateinit var test: ItemEditListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +51,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initRecyclerview() {
-        rvAdapter = DiaryRecyclerViewAdapter()
+        // 리사이클러뷰 작업
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        layoutManager.isItemPrefetchEnabled = true
+        rvAdapter = DiaryRecyclerViewAdapter(this)
         user_recyclerview.adapter = rvAdapter
-        user_recyclerview.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        user_recyclerview.layoutManager = layoutManager
+
         user_recyclerview.hasFixedSize()
 
         // 리사이클러뷰업 ItemTouchHelper 붙이는 작업
@@ -76,22 +82,40 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 val intent = Intent(this@MainActivity, WriteDiaryActivity::class.java)
                 startActivityForResult(intent, WRITE_DIARY_CODE)
             }
+
+            R.id.main_date_textview -> {
+
+            }
         }
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Log.d("onActivityResult", "$requestCode, $resultCode")
+        when (requestCode) {
 
-        if(requestCode == WRITE_DIARY_CODE) {
-            if(resultCode == Activity.RESULT_OK) {
-                val bundle = data?.getBundleExtra("ff")
-                val diary = bundle?.getSerializable("hi") as Diary
-                Log.d("Data : ", "$diary")
-                diaryData.add(diary)
-                rvAdapter?.notifyDataSetChanged()
+            WRITE_DIARY_CODE -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val bundle = data?.getBundleExtra("bundleData")
+                    val diary = bundle?.getSerializable("diary") as Diary
+                    Log.d("Data : ", "$diary")
+                    diaryData.add(diary)
+                    rvAdapter?.notifyDataSetChanged()
+                }
+            }
+
+            EDIT_DIARY_CODE -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val bundle = data?.getBundleExtra("bundleData")
+                    val diary = bundle?.getSerializable("diary") as Diary
+                    val position = bundle.getInt("position")
+
+                    Log.d("Edit Data : ", "$diary")
+                    rvAdapter?.onEditFinish(diary, position)
+                }
             }
         }
-
     }
+
 }
