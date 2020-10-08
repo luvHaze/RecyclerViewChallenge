@@ -7,12 +7,8 @@ import java.util.*
 
 data class Diary(
     var title: String,
-    var date: Date,
+    var date: String,
     var feeling_state: Feeling,
     var body: String,
-    var cover: Uri?
-) : Serializable {
-    enum class Feeling {
-        HAPPY, SOSO, SAD
-    }
-}
+    var cover: String?
+) : Serializable

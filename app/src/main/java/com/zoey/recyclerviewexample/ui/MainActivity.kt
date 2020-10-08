@@ -1,8 +1,10 @@
 package com.zoey.recyclerviewexample.ui
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,15 +13,21 @@ import com.zoey.recyclerviewexample.adapter.ItemTouchHelperCallback
 import com.zoey.recyclerviewexample.adapter.DiaryRecyclerViewAdapter
 import com.zoey.recyclerviewexample.model.Diary
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+
+const val WRITE_DIARY_CODE = 201
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private var rvAdapter: DiaryRecyclerViewAdapter? = null
-    private var dummyData: ArrayList<Diary> = ArrayList<Diary>()
+    private var diaryData: ArrayList<Diary> = ArrayList<Diary>()
     private var itemTouchHelper: ItemTouchHelper? = null
     private var itemTouchHelperCallback: ItemTouchHelperCallback? = null
     private var swipeState: Boolean = false
     private var dragState: Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +35,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         initActivity()
         initRecyclerview()
+        rvAdapter?.submitUserList(diaryData)
 
     }
 
     private fun initActivity() {
+        val today = SimpleDateFormat("yyyy. MM. dd").format(Date())
+
+        main_date_textview.text = today
         recyclerview_sort_button.setOnClickListener(this)
         write_diary_fab.setOnClickListener(this)
     }
@@ -40,6 +52,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         user_recyclerview.adapter = rvAdapter
         user_recyclerview.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        user_recyclerview.hasFixedSize()
 
         // 리사이클러뷰업 ItemTouchHelper 붙이는 작업
         itemTouchHelperCallback = ItemTouchHelperCallback(rvAdapter!!, swipeState, dragState)
@@ -61,7 +74,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
             R.id.write_diary_fab -> {
                 val intent = Intent(this@MainActivity, WriteDiaryActivity::class.java)
-                startActivity(intent)
+                startActivityForResult(intent, WRITE_DIARY_CODE)
+            }
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == WRITE_DIARY_CODE) {
+            if(resultCode == Activity.RESULT_OK) {
+                val bundle = data?.getBundleExtra("ff")
+                val diary = bundle?.getSerializable("hi") as Diary
+                Log.d("Data : ", "$diary")
+                diaryData.add(diary)
+                rvAdapter?.notifyDataSetChanged()
             }
         }
 

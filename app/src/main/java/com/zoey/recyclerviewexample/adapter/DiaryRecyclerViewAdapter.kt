@@ -17,7 +17,7 @@ class DiaryRecyclerViewAdapter : RecyclerView.Adapter<DiaryRecyclerViewHolder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiaryRecyclerViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_diary, parent, false)
-        return DiaryRecyclerViewHolder(view)
+        return DiaryRecyclerViewHolder(view, parent.context)
     }
 
     override fun getItemCount(): Int {

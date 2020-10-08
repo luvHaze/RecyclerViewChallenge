@@ -6,9 +6,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.zoey.recyclerviewexample.R
 import com.zoey.recyclerviewexample.model.Diary
+import com.zoey.recyclerviewexample.model.Feeling
 import kotlinx.android.synthetic.main.activity_write_diary.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -39,17 +42,17 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun loadData(data: Diary) {
         write_body_edittext.setText(data.body)
-        cover_circleimageview.setImageURI(data.cover)
+        cover_circleimageview.setImageURI(data.cover?.toUri())
         write_title_edittext.setText(data.title)
 
         when (data.feeling_state) {
-            Diary.Feeling.HAPPY -> {
+            Feeling.HAPPY -> {
                 feel_happy_radiobutton.isChecked = true
             }
-            Diary.Feeling.SOSO -> {
+            Feeling.SOSO -> {
                 feel_soso_radiobutton.isChecked = true
             }
-            Diary.Feeling.SAD -> {
+            Feeling.SAD -> {
                 feel_sad_radiobutton.isChecked = true
             }
         }
@@ -72,7 +75,14 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.confirm_diary_textview -> {
-                writeDiary()
+                val diary = writeDiary()
+                //val intent = Intent(this, MainActivity::class.java)
+                val bundle = Bundle()
+
+                bundle.putSerializable("hi", diary)
+
+                intent.putExtra("ff",bundle)
+                setResult(Activity.RESULT_OK, intent)
                 finish()
             }
         }
@@ -81,27 +91,29 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
     fun writeDiary(): Diary {
 
         val date = Date()
-        var checkedState = radioGroup.checkedRadioButtonId
-        lateinit var feelingState: Diary.Feeling
+        val dateformat = SimpleDateFormat("EEE MMM dd").format(date).toString()
+
+        val checkedState = radioGroup.checkedRadioButtonId
+        lateinit var feelingState: Feeling
 
         when (checkedState) {
             R.id.feel_soso_radiobutton -> {
-                feelingState = Diary.Feeling.SOSO
+                feelingState = Feeling.SOSO
             }
             R.id.feel_happy_radiobutton -> {
-                feelingState = Diary.Feeling.HAPPY
+                feelingState = Feeling.HAPPY
             }
             R.id.feel_sad_radiobutton -> {
-                feelingState = Diary.Feeling.SAD
+                feelingState = Feeling.SAD
             }
         }
 
         return Diary(
             write_title_edittext.text.toString(),
-            date,
+            dateformat,
             feelingState,
             write_body_edittext.text.toString(),
-            imageURI
+            imageURI.toString()
         )
 
     }
