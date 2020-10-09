@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.ReadDiaryActivity">
+
+    <ImageView
+        android:id="@+id/read_cover_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:scaleType="centerCrop"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/day4" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:background="@drawable/gradient_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/read_feeling_imageview"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="384dp"
+        android:background="@drawable/rounded_shape"
+        android:backgroundTint="@color/feelHappy"
+        app:layout_constraintStart_toStartOf="@+id/read_cover_imageview"
+        app:layout_constraintTop_toTopOf="@+id/read_cover_imageview" />
+
+    <TextView
+        android:id="@+id/read_date_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/dx_s"
+        android:gravity="center_vertical"
+        android:letterSpacing="-0.02"
+        android:padding="16dp"
+        android:text="Mon, Aug 05"
+        android:textAlignment="viewEnd"
+        android:textColor="#ffffff"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="@+id/read_cover_imageview"
+        app:layout_constraintEnd_toEndOf="@+id/read_cover_imageview"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/read_cover_imageview" />
+
+    <TextView
+        android:id="@+id/read_title_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/dx_s"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:padding="16dp"
+        android:text="This is Title"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/colorFont"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/read_cover_imageview" />
+
+    <TextView
+        android:id="@+id/read_body_textview"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:fontFamily="@font/dx_s"
+        android:letterSpacing="0.01"
+        android:lineSpacingExtra="12dp"
+        android:maxLines="6"
+        android:padding="16dp"
+        android:text="@string/lorem_ipsum"
+        android:textAlignment="viewEnd"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/read_title_textview" />
+</androidx.constraintlayout.widget.ConstraintLayout>

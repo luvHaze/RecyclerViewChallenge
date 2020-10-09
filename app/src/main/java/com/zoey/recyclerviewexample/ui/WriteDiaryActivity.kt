@@ -15,6 +15,7 @@ import com.zoey.recyclerviewexample.R
 import com.zoey.recyclerviewexample.adapter.ItemEditListener
 import com.zoey.recyclerviewexample.model.Diary
 import com.zoey.recyclerviewexample.model.Feeling
+import com.zoey.recyclerviewexample.util.PERMISSION_LIST
 import com.zoey.recyclerviewexample.util.PICK_IMAGE_GALLERY_CODE
 import kotlinx.android.synthetic.main.activity_write_diary.*
 import java.text.SimpleDateFormat
@@ -29,8 +30,7 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
     private var imageUri: Uri? = null
     private var EDIT_MODE: Boolean = false
     private var EDIT_POSITION: Int = 0
-    private val PERMISSION_LIST =
-        arrayListOf<String>(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
     private val READ_EXTERNAL_PEMISSION_CODE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,9 +67,13 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun loadData(data: Diary) {
 
-        val uri = Uri.parse(data.cover)
+        imageUri = Uri.parse(data.cover)
         write_body_edittext.setText(data.body)
-        Glide.with(this).load(uri).into(cover_circleimageview)
+        Glide.with(this)
+            .load(imageUri)
+            .override(500, 500)
+            .placeholder(R.drawable.image_placeholder)
+            .into(cover_circleimageview)
         write_title_edittext.setText(data.title)
 
         when (data.feeling_state) {
@@ -141,7 +145,7 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
     fun writeDiary(): Diary {
 
         val date = Date()
-        val dateformat = SimpleDateFormat("EEE MMM dd").format(date).toString()
+        val dateformat = SimpleDateFormat("EEE MMM dd", Locale.US).format(date).toString()
 
         val checkedState = radioGroup.checkedRadioButtonId
         lateinit var feelingState: Feeling
@@ -168,6 +172,15 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+    private fun loadPicture() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.setDataAndType(
+            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            "image/*"
+        )
+        startActivityForResult(intent, PICK_IMAGE_GALLERY_CODE)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -178,6 +191,9 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
                         val dataUri = data.data
                         Glide.with(this).load(dataUri).into(cover_circleimageview)
                         imageUri = dataUri
+                        /* 이부분 중요 */
+                        /* permission Denial 고생한 부분 중요 중요 중요 중요 */
+                        contentResolver.takePersistableUriPermission(imageUri!!, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     } catch (e: Exception) {
                         Toast.makeText(this, "사진 불러오기 실패", Toast.LENGTH_SHORT).show()
                     }
@@ -206,14 +222,7 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun loadPicture() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.setDataAndType(
-            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            "image/*"
-        )
-        startActivityForResult(intent, PICK_IMAGE_GALLERY_CODE)
-    }
+
 
 
 }

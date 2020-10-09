@@ -14,7 +14,8 @@ import com.zoey.recyclerviewexample.model.Diary
 import com.zoey.recyclerviewexample.util.EDIT_DIARY_CODE
 import com.zoey.recyclerviewexample.ui.WriteDiaryActivity
 
-class DiaryRecyclerViewAdapter(private var context: Context) : RecyclerView.Adapter<DiaryRecyclerViewHolder>(),
+class DiaryRecyclerViewAdapter(private var context: Context) :
+    RecyclerView.Adapter<DiaryRecyclerViewHolder>(),
     SwipeButtonInterface, ItemTouchListener, ItemEditListener {
 
     private var userList = ArrayList<Diary>()
@@ -25,19 +26,11 @@ class DiaryRecyclerViewAdapter(private var context: Context) : RecyclerView.Adap
         return DiaryRecyclerViewHolder(view, parent.context, this)
     }
 
-    override fun getItemCount(): Int {
-        return userList.size
-    }
-
     override fun onBindViewHolder(holder: DiaryRecyclerViewHolder, position: Int) {
         holder.onBind(userList[position])
         viewBinderHelper.setOpenOnlyOne(true)
         viewBinderHelper.bind(holder.swipeRevealLayout, "swipeLayout")
         viewBinderHelper.closeLayout("swipeLayout")
-    }
-
-    fun submitUserList(list: ArrayList<Diary>) {
-        this.userList = list
     }
 
     override fun onItemMove(from_position: Int, to_position: Int): Boolean {
@@ -57,10 +50,7 @@ class DiaryRecyclerViewAdapter(private var context: Context) : RecyclerView.Adap
         bundle.putInt("position", position)
         intent.putExtra("loadData", bundle)
 
-        (context as Activity).startActivityForResult(intent,
-            EDIT_DIARY_CODE
-        )
-
+        (context as Activity).startActivityForResult(intent, EDIT_DIARY_CODE)
     }
 
     override fun onClickRemoveButton(position: Int) {
@@ -75,5 +65,14 @@ class DiaryRecyclerViewAdapter(private var context: Context) : RecyclerView.Adap
         notifyItemChanged(position)
     }
 
+    fun submitUserList(list: ArrayList<Diary>) {
+        this.userList = list
+    }
+
+    override fun getItemCount(): Int {
+        return userList.size
+    }
 
 }
+
+
