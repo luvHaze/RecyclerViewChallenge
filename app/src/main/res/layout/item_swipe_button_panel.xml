@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="140dp"
+    android:layout_height="200dp">
+
+    <ImageView
+        android:id="@+id/item_edit_button"
+        android:layout_width="60dp"
+        android:layout_height="180dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="#72BAF3"
+        android:padding="18dp"
+        android:src="@drawable/ic_edit"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#0A5998" />
+
+    <ImageView
+        android:id="@+id/item_remove_button"
+        android:layout_width="60dp"
+        android:layout_height="180dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="#FF8D8D"
+        android:padding="18dp"
+        android:src="@drawable/ic_trash_can"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/item_edit_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#B60C0C" />
+</androidx.constraintlayout.widget.ConstraintLayout>

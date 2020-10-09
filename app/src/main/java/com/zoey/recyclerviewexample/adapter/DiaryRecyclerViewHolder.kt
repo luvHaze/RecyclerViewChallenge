@@ -39,6 +39,7 @@ class DiaryRecyclerViewHolder(
     private var btnEdit = itemView.findViewById<ImageView>(R.id.item_edit_button)
     private var btnRemove = itemView.findViewById<ImageView>(R.id.item_remove_button)
 
+
     fun onBind(data: Diary) {
         diaryData = data
 

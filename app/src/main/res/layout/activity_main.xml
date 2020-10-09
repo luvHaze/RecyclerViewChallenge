@@ -71,7 +71,6 @@
         android:tint="#FFF"
         app:backgroundTint="#FB683A"
         app:fabSize="normal"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

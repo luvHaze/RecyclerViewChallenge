@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zoey.recyclerviewexample.R
@@ -13,8 +14,8 @@ import com.zoey.recyclerviewexample.adapter.ItemTouchHelperCallback
 import com.zoey.recyclerviewexample.adapter.DiaryRecyclerViewAdapter
 import com.zoey.recyclerviewexample.adapter.ItemEditListener
 import com.zoey.recyclerviewexample.model.Diary
-import com.zoey.recyclerviewexample.model.EDIT_DIARY_CODE
-import com.zoey.recyclerviewexample.model.WRITE_DIARY_CODE
+import com.zoey.recyclerviewexample.util.EDIT_DIARY_CODE
+import com.zoey.recyclerviewexample.util.WRITE_DIARY_CODE
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -57,10 +58,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         rvAdapter = DiaryRecyclerViewAdapter(this)
         user_recyclerview.adapter = rvAdapter
         user_recyclerview.layoutManager = layoutManager
+        user_recyclerview.setHasFixedSize(true)
 
-        user_recyclerview.hasFixedSize()
-
-        // 리사이클러뷰업 ItemTouchHelper 붙이는 작업
+        // 리사이클러뷰업 ItemTouchHelper 붙이는 작업 (드래그 작업 위함)
         itemTouchHelperCallback = ItemTouchHelperCallback(rvAdapter!!, swipeState, dragState)
         itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback!!)
         itemTouchHelper!!.attachToRecyclerView(user_recyclerview);
@@ -82,10 +82,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 val intent = Intent(this@MainActivity, WriteDiaryActivity::class.java)
                 startActivityForResult(intent, WRITE_DIARY_CODE)
             }
-
-            R.id.main_date_textview -> {
-
-            }
         }
 
     }
@@ -95,6 +91,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         Log.d("onActivityResult", "$requestCode, $resultCode")
         when (requestCode) {
 
+            // 작성하고 나서 결과값이 들어올 때
             WRITE_DIARY_CODE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val bundle = data?.getBundleExtra("bundleData")
@@ -104,7 +101,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     rvAdapter?.notifyDataSetChanged()
                 }
             }
-
+            // 수정하고 나서 결과값이 들어올 때
             EDIT_DIARY_CODE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val bundle = data?.getBundleExtra("bundleData")

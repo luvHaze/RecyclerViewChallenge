@@ -7,12 +7,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.zoey.recyclerviewexample.R
 import com.zoey.recyclerviewexample.model.Diary
-import com.zoey.recyclerviewexample.model.EDIT_DIARY_CODE
+import com.zoey.recyclerviewexample.util.EDIT_DIARY_CODE
 import com.zoey.recyclerviewexample.ui.WriteDiaryActivity
 
 class DiaryRecyclerViewAdapter(private var context: Context) : RecyclerView.Adapter<DiaryRecyclerViewHolder>(),
@@ -58,7 +57,9 @@ class DiaryRecyclerViewAdapter(private var context: Context) : RecyclerView.Adap
         bundle.putInt("position", position)
         intent.putExtra("loadData", bundle)
 
-        (context as Activity).startActivityForResult(intent, EDIT_DIARY_CODE)
+        (context as Activity).startActivityForResult(intent,
+            EDIT_DIARY_CODE
+        )
 
     }
 

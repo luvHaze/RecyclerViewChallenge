@@ -1,29 +1,25 @@
 package com.zoey.recyclerviewexample.ui
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
+import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
 import com.zoey.recyclerviewexample.R
 import com.zoey.recyclerviewexample.adapter.ItemEditListener
 import com.zoey.recyclerviewexample.model.Diary
-import com.zoey.recyclerviewexample.model.EDIT_DIARY_CODE
 import com.zoey.recyclerviewexample.model.Feeling
-import com.zoey.recyclerviewexample.model.PICK_IMAGE_GALLERY_CODE
+import com.zoey.recyclerviewexample.util.PICK_IMAGE_GALLERY_CODE
 import kotlinx.android.synthetic.main.activity_write_diary.*
-import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.jar.Manifest
 
 
 class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
@@ -33,6 +29,9 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
     private var imageUri: Uri? = null
     private var EDIT_MODE: Boolean = false
     private var EDIT_POSITION: Int = 0
+    private val PERMISSION_LIST =
+        arrayListOf<String>(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    private val READ_EXTERNAL_PEMISSION_CODE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +39,8 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
 
         initActivity()
 
+        // 수정부분인지 파악한다.
+        // loadData가 존재하면 수정기능을 실행해야 하기 때문
         val bundle: Bundle? = intent.extras?.getBundle("loadData")
         if (bundle != null) {
 
@@ -88,14 +89,17 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
         when (view?.id) {
 
             R.id.add_cover_imageview -> {
-
-                val intent = Intent(Intent.ACTION_PICK)
-                intent.setDataAndType(
-                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    "image/*"
-                )
-
-                startActivityForResult(intent, PICK_IMAGE_GALLERY_CODE)
+                var isPermissionGranted =
+                    checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                if (isPermissionGranted == PackageManager.PERMISSION_GRANTED) {
+                    loadPicture()
+                } else {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        PERMISSION_LIST.toTypedArray(),
+                        READ_EXTERNAL_PEMISSION_CODE
+                    )
+                }
             }
 
             R.id.backbutton_imageview -> {
@@ -103,7 +107,7 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.confirm_diary_textview -> {
-                when(EDIT_MODE) {
+                when (EDIT_MODE) {
                     true -> {
                         val diary = writeDiary()
                         val position = EDIT_POSITION
@@ -129,9 +133,6 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
 
-            }
-
-            R.id.cover_circleimageview -> {
             }
         }
     }
@@ -183,6 +184,35 @@ class WriteDiaryActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (requestCode) {
+            READ_EXTERNAL_PEMISSION_CODE -> {
+                var isPermissionAllGranted = true
+                grantResults.forEach {
+                    if (it != PackageManager.PERMISSION_GRANTED) isPermissionAllGranted = false
+                }
+                if (isPermissionAllGranted) {
+                    loadPicture()
+                }
+            }
+        }
+    }
+
+    private fun loadPicture() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.setDataAndType(
+            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            "image/*"
+        )
+        startActivityForResult(intent, PICK_IMAGE_GALLERY_CODE)
     }
 
 
